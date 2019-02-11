@@ -2,7 +2,7 @@ resource "google_compute_instance" "splunk-server" {
   project      = "cloudjupyter-bhanu"
   name         = "splunk"
   machine_type = "g1-small"
-  zone         = "asia-south1-c"
+  zone         = "asia-south1-a"
 
   boot_disk {
     initialize_params {

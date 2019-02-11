@@ -19,13 +19,19 @@
           register: installed_splunk
           when: splunk_install.stat.exists == False
 
+        - name: splunk start
+          command: /opt/splunk/bin/splunk start --accept-license --answer-yes --no-prompt 
+
         - name: splunk user-seed
           copy:
             dest: "/opt/splunk/etc/system/local/user-seed.conf"
             content: |
-                 [user-info]
+                 [user_info]
                  USERNAME = bhanu
-                 PASSWORD = "Tcs@1234"
+                 PASSWORD = Tcs@1234
 
         - name: splunk start
-          command: /opt/splunk/bin/splunk start --accept-license --no-prompt
+          command: /opt/splunk/bin/splunk restart
+
+        - name: splunk boot start
+          command: /opt/splunk/bin/splunk enable boot-start
