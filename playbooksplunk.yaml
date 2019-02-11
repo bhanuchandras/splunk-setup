@@ -3,7 +3,29 @@
   gather_facts: yes
   become: yes
   tasks:
+        - name: Check installation
+          stat:
+                  path: /opt/splunk
+          register: splunk_install
+
         - name: Gets tarball
           get_url:
             url="https://www.splunk.com/bin/splunk/DownloadActivityServlet?architecture=x86_64&platform=linux&version=7.2.3&product=splunk&filename=splunk-7.2.3-06d57c595b80-linux-2.6-amd64.deb&wget=true"
             dest="/home/bhanuchandra_sabbavarapu"
+          when: splunk_install.stat.exists == False
+
+        - name: install splunk
+          command: dpkg -i /home/bhanuchandra_sabbavarapu/splunk-7.2.3-06d57c595b80-linux-2.6-amd64.deb
+          register: installed_splunk
+          when: splunk_install.stat.exists == False
+
+        - name: splunk user-seed
+          copy:
+            dest: "/opt/splunk/etc/system/local/user-seed.conf"
+            content: |
+                 [user-info]
+                 USERNAME = bhanu
+                 PASSWORD = "Tcs@1234"
+
+        - name: splunk start
+          command: /opt/splunk/bin/splunk start --accept-license --no-prompt
