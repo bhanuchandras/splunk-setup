@@ -39,6 +39,3 @@
         - name: enable splunk boot start
           command: /opt/splunk/bin/splunk enable boot-start
           when: installed_splunk.changed
-
-        - name: adding monitoring
-          command: /opt/splunk/bin/splunk monitor add /var/log/
