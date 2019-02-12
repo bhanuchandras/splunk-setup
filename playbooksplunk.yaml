@@ -19,8 +19,9 @@
           register: installed_splunk
           when: splunk_install.stat.exists == False
 
-        - name: splunk start
+        - name: splunk start by accepting license
           command: /opt/splunk/bin/splunk start --accept-license --answer-yes --no-prompt 
+          when: installed_splunk.changed
 
         - name: splunk user-seed
           copy:
@@ -29,9 +30,15 @@
                  [user_info]
                  USERNAME = bhanu
                  PASSWORD = Tcs@1234
+          when: installed_splunk.changed
 
-        - name: splunk start
+        - name: splunk restart after user seed
           command: /opt/splunk/bin/splunk restart
+          when: installed_splunk.changed
 
-        - name: splunk boot start
+        - name: enable splunk boot start
           command: /opt/splunk/bin/splunk enable boot-start
+          when: installed_splunk.changed
+
+        - name: adding monitoring
+          command: /opt/splunk/bin/splunk monitor add /var/log/
